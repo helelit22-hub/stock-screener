@@ -177,4 +177,77 @@ def send_email_smtp(to_addr, subject, html_body, attachment_path=None):
 
 def build_email_html(final, tickers, now):
     rows_html = ""
-    for s in final[
+    for s in final[:30]:
+        color = 'green' if s['vs_MA_%'] > 0 else 'red'
+        rows_html += f"""<tr>
+          <td style="padding:6px 10px;border:1px solid #ddd;font-weight:bold;color:#1F4E79">{s['Ticker']}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd">{s.get('Company','')[:30]}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:right">${s['Price']:.2f}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:right">${s['MA150']:.2f}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:right;color:{color}">{s['vs_MA_%']:+.1f}%</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:right;font-weight:bold">{s['ATR14']:.2f}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:right">${s.get('Market_Cap_M',0):,.0f}M</td>
+        </tr>"""
+
+    no_results = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">No stocks found</td></tr>'
+    return f"""
+<div style="font-family:Arial,sans-serif;max-width:900px;margin:0 auto" dir="rtl">
+  <div style="background:#1F4E79;color:white;padding:20px;border-radius:8px 8px 0 0">
+    <h2 style="margin:0">Stock Scan - Market Close</h2>
+    <p style="margin:5px 0 0 0;opacity:0.85">{now.strftime('%A, %d/%m/%Y | %H:%M UTC')}</p>
+  </div>
+  <div style="padding:20px;background:white">
+    <p>Scanned: {len(tickers):,} tickers | Passed filter: {len(final)}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px" dir="ltr">
+      <thead>
+        <tr style="background:#1F4E79;color:white">
+          <th style="padding:8px 10px;text-align:left">Ticker</th>
+          <th style="padding:8px 10px;text-align:left">Company</th>
+          <th style="padding:8px 10px;text-align:right">Price</th>
+          <th style="padding:8px 10px;text-align:right">MA150</th>
+          <th style="padding:8px 10px;text-align:right">% vs MA</th>
+          <th style="padding:8px 10px;text-align:right">ATR14</th>
+          <th style="padding:8px 10px;text-align:right">Market Cap</th>
+        </tr>
+      </thead>
+      <tbody>{rows_html if rows_html else no_results}</tbody>
+    </table>
+  </div>
+</div>"""
+
+if __name__ == "__main__":
+    OUTPUT_DIR = os.environ.get('OUTPUT_DIR', os.path.dirname(os.path.abspath(__file__)))
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    now = datetime.now()
+    ts = now.strftime('%Y-%m-%d_%H%M')
+
+    print("\nFetching tickers...")
+    tickers = get_all_tickers()
+    print(f"Total tickers: {len(tickers):,}")
+
+    print("\nScanning price / MA150 / ATR...")
+    preliminary = scan_batch(tickers)
+    print(f"\nPassed price/ATR filter: {len(preliminary)} stocks")
+
+    final = add_market_cap(preliminary)
+    final.sort(key=lambda x: x['ATR14'], reverse=True)
+    print(f"Passed market cap filter: {len(final)} stocks")
+
+    print("\nSaving Excel...")
+    xlsx_path = save_excel(final, OUTPUT_DIR, ts)
+    print(f"Saved: {xlsx_path}")
+
+    print("\nSending email...")
+    to_addr = os.environ.get('MAIL_TO', '')
+    subject = f"Stock Scan - Market Close | {now.strftime('%d/%m/%Y')}"
+    html = build_email_html(final, tickers, now)
+    try:
+        send_email_smtp(to_addr, subject, html, attachment_path=xlsx_path)
+        print(f"Email sent to {to_addr}")
+    except Exception as e:
+        print(f"Email error: {e}")
+        sys.exit(1)
+
+    print("\n" + "=" * 50)
+    print(f"   Done - {len(final)} stocks found")
+    print("=" * 50)
