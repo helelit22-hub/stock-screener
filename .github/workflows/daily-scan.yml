@@ -1,0 +1,45 @@
+name: Daily Stock Scan
+
+on:
+  schedule:
+    - cron: '30 21 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run stock scanner
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          OUTPUT_DIR: ${{ github.workspace }}/output
+        run: |
+          mkdir -p output
+          python stock_scanner.py
+
+      - name: Upload Excel artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-scan-${{ github.run_id }}
+          path: output/*.xlsx
+          if-no-files-found: ignore
+          retention-days: 30
