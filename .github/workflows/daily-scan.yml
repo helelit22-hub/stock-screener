@@ -1,14 +1,24 @@
-name: Daily Stock Scan
+
 
 on:
+  # 2 הרצות ביום. ה-cron מתחיל 15 דק' מוקדם יותר כדי שהמייל יגיע בערך בזמן היעד
+  # (הסריקה לוקחת ~15 דק'). השעות מחושבות לקיץ; בחורף יזוזו בשעה קדימה בישראל.
   schedule:
-    - cron: '30 21 * * 1-5'
+    # התחלה 19:30 → מייל מגיע ~19:45 (אמצע יום המסחר)
+    - cron: '30 16 * * 1-5'
+
+    # התחלה 23:15 → מייל מגיע ~23:30 (30 דק' אחרי סגירת השוק)
+    - cron: '15 20 * * 1-5'
+
+  # מאפשר הפעלה ידנית מלשונית Actions ב-GitHub
   workflow_dispatch:
 
 jobs:
   scan:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: write   # צריך כדי לעשות commit/push להיסטוריה
 
     steps:
       - name: Checkout repo
@@ -34,6 +44,17 @@ jobs:
         run: |
           mkdir -p output
           python stock_scanner.py
+
+      - name: Commit history.json
+        if: always()
+        run: |
+          if [ -f history.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add history.json
+            git diff --quiet --cached || git commit -m "Update scan history [skip ci]"
+            git push || echo "No changes to push"
+          fi
 
       - name: Upload Excel artifact
         if: always()
