@@ -1,0 +1,29 @@
+{
+  "scans": [
+    {
+      "date": "2026-04-20",
+      "tickers": [
+        "AAPL",
+        "AMZN",
+        "ANET",
+        "APH",
+        "AZN",
+        "BA",
+        "C",
+        "CVX",
+        "JNJ",
+        "JPM",
+        "MCD",
+        "MS",
+        "NVDA",
+        "RTX",
+        "TJX",
+        "TM",
+        "TXN",
+        "UNP",
+        "WELL",
+        "XOM"
+      ]
+    }
+  ]
+}
