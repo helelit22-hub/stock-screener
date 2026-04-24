@@ -99,6 +99,31 @@
         "WM",
         "XOM"
       ]
+    },
+    {
+      "date": "2026-04-24",
+      "tickers": [
+        "AAPL",
+        "AMGN",
+        "AMZN",
+        "ANET",
+        "APH",
+        "AZN",
+        "CB",
+        "COP",
+        "CVX",
+        "HON",
+        "INTC",
+        "JNJ",
+        "JPM",
+        "MS",
+        "NEM",
+        "NVDA",
+        "PM",
+        "UNP",
+        "WELL",
+        "XOM"
+      ]
     }
   ]
 }
