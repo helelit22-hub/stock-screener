@@ -124,6 +124,31 @@
         "WELL",
         "XOM"
       ]
+    },
+    {
+      "date": "2026-04-27",
+      "tickers": [
+        "AAPL",
+        "AMZN",
+        "ANET",
+        "APH",
+        "AZN",
+        "BA",
+        "CB",
+        "CME",
+        "COP",
+        "CVX",
+        "HON",
+        "INTC",
+        "JNJ",
+        "JPM",
+        "MS",
+        "NEM",
+        "NVDA",
+        "UNP",
+        "WELL",
+        "XOM"
+      ]
     }
   ]
 }
