@@ -224,6 +224,31 @@
         "WM",
         "XOM"
       ]
+    },
+    {
+      "date": "2026-05-01",
+      "tickers": [
+        "ANET",
+        "APH",
+        "AZN",
+        "BA",
+        "CB",
+        "CME",
+        "COP",
+        "CVX",
+        "HON",
+        "INTC",
+        "JNJ",
+        "JPM",
+        "MS",
+        "NEM",
+        "NVDA",
+        "PM",
+        "UNP",
+        "WELL",
+        "WM",
+        "XOM"
+      ]
     }
   ]
 }
