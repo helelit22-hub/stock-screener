@@ -299,6 +299,31 @@
         "WM",
         "XOM"
       ]
+    },
+    {
+      "date": "2026-05-06",
+      "tickers": [
+        "APH",
+        "AZN",
+        "BA",
+        "CB",
+        "CME",
+        "COP",
+        "CVX",
+        "HON",
+        "INTC",
+        "JCI",
+        "JNJ",
+        "JPM",
+        "MS",
+        "NEM",
+        "PANW",
+        "PM",
+        "PNC",
+        "UNP",
+        "WELL",
+        "XOM"
+      ]
     }
   ]
 }
