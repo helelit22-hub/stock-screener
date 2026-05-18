@@ -499,6 +499,31 @@
         "WELL",
         "XOM"
       ]
+    },
+    {
+      "date": "2026-05-18",
+      "tickers": [
+        "AAPL",
+        "ABNB",
+        "AMZN",
+        "CB",
+        "CME",
+        "CSCO",
+        "CVX",
+        "FTNT",
+        "HON",
+        "JCI",
+        "JNJ",
+        "MS",
+        "NEM",
+        "PM",
+        "PNC",
+        "UNP",
+        "V",
+        "WELL",
+        "WM",
+        "XOM"
+      ]
     }
   ]
 }
